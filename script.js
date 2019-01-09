@@ -13,7 +13,26 @@ const quizController = (() => {
 
     return {
         addQuestionOnLocalStorage: (newQuestText, opts) => {
-            console.log("hi");
+            // console.log("hi");
+            var optionsArray, correctAns, questionId, newQuestion;
+
+            // Array to store options
+            optionsArray = [];
+            questionId = 0;
+
+            // loop through the options
+            for (var i = 0; i < opts.length; i++) {
+                // if value is not empty then push to array
+                if (opts[i].value !== "") {
+                    optionsArray.push(opts[i].value);
+                }
+
+                if (opts[i].previousElementSibling.checked && opts[i].value !== "") {
+                    correctAns = opts[i].value;
+                }
+            }
+
+            newQuestion = new Question(questionId, newQuestText.value, optionsArray, correctAns);
         }
     }
     

@@ -11,14 +11,29 @@ const quizController = (() => {
         this.correctAnswer = correctAnswer;
     }
 
+    const questionLocalStorage = {
+        setQuestionCollection: (newCollection) => {
+            localStorage.setItem("questionCollection", JSON.stringify(newCollection));
+        },
+        getQuestionCollection: () => {
+            return JSON.parse(localStorage.getItem("questionCollection"));
+        },
+        removeQuestionCollection: () => {
+            localStorage.removeItem("questionCollection");
+        }
+    };
+
     return {
         addQuestionOnLocalStorage: (newQuestText, opts) => {
             // console.log("hi");
-            var optionsArray, correctAns, questionId, newQuestion;
+            var optionsArray, correctAns, questionId, newQuestion, getStoredQuestions;
 
+            if (questionLocalStorage.getQuestionCollection() === null) {
+                questionLocalStorage.setQuestionCollection([]);
+            }
             // Array to store options
             optionsArray = [];
-            questionId = 0;
+            // questionId = 0;
 
             // loop through the options
             for (var i = 0; i < opts.length; i++) {
@@ -32,7 +47,20 @@ const quizController = (() => {
                 }
             }
 
+            // [ {id: 0} ]
+
+            if (questionLocalStorage.getQuestionCollection().length > 0) {
+                // Increment the question ID for each question collection
+                questionId = questionLocalStorage.getQuestionCollection()[questionLocalStorage.getQuestionCollection().length - 1].id + 1;
+            } else {
+                questionId = 0;
+            }
+
             newQuestion = new Question(questionId, newQuestText.value, optionsArray, correctAns);
+
+            getStoredQuestions = questionLocalStorage.getQuestionCollection();
+            getStoredQuestions.push(newQuestion);
+            questionLocalStorage.setQuestionCollection(getStoredQuestions);
         }
     }
     
